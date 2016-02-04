@@ -18,9 +18,14 @@ def get_ip_addr():
     Es decir, al tener `enp0s23`, `wlan6`, y `enp0s23:1`, `enp0s23` sera la elegida.
     """
     EXCLUDE_IFACES = ['lo']
-    iface = filter(lambda i: i not in EXCLUDE_IFACES, netifaces.interfaces())[0]
+    ip_addr = "127.0.0.1"
+    ifaces = filter(lambda i: i not in EXCLUDE_IFACES, netifaces.interfaces())
 
-    return netifaces.ifaddresses(iface)[netifaces.AF_INET][0]['addr']
+    for iface in ifaces:
+        if netifaces.AF_INET in netifaces.ifaddresses(iface):
+            ip_addr = netifaces.ifaddresses(iface)[netifaces.AF_INET][0]['addr']
+
+    return ip_addr
 
 
 class MyListener(object):
