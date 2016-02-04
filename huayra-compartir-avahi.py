@@ -1,7 +1,9 @@
 from six.moves import input
 from zeroconf import ServiceBrowser, ServiceInfo, Zeroconf
+import requests
 
 API_PORT = 9919
+USE_API = True
 
 import logging
 import socket
@@ -13,29 +15,26 @@ import uuid
 class MyListener(object):
 
     def remove_service(self, zeroconf, type, name):
-        print("- Service %s removed" % (name,))
+        info = zeroconf.get_service_info(type, name)
+        if 'huayra-compartir-web-2' in name:
+            machine_id = name.split("__")[1]
+            print("- baja de servicio ", machine_id)
 
     def add_service(self, zeroconf, type, name):
-        info = zeroconf.get_service_info(type, name)
-        #print "1"
-        #print("+ Service %s created" %(name,))
-        #print "2"
-        #print name
-        #print "44"
-        #print info.get_name()
-        #print "66"
-        ip = '.'.join(str(ord(i)) for i in info.address)
-        print(ip + " como " + name)
-        #print "3"
-        #print name, info
+        if 'huayra-compartir-web-2' in name:
+            info = zeroconf.get_service_info(type, name)
+            machine_id = name.split("__")[1]
+            ip = '.'.join(str(ord(i)) for i in info.address)
+            print("+ nuevo servicio ", ip, machine_id)
+
 
 # TODO: Obtener este numero desde machine-id
 id = uuid.uuid1()
 
 zeroconf = Zeroconf()
 desc = {}
-info = ServiceInfo("_http._tcp.local.", "huayra-compartir-web-2__" + str(id) + "__._http._tcp.local.",
-                   socket.inet_aton("127.0.0.1"), API_PORT, 0, 0, desc)
+name = "huayra-compartir-web-2__" + str(id) + "__._http._tcp.local."
+info = ServiceInfo("_http._tcp.local.", name, socket.inet_aton("127.0.0.1"), API_PORT, 0, 0, desc)
 
 print("Anunciando servicio")
 zeroconf.register_service(info)
