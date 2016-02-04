@@ -10,6 +10,17 @@ import socket
 import sys
 import requests
 import uuid
+import netifaces
+
+def get_ip_addr():
+    """
+    Por defecto vamos a tomar a la primer interface de las disponibles.
+    Es decir, al tener `enp0s23`, `wlan6`, y `enp0s23:1`, `enp0s23` sera la elegida.
+    """
+    EXCLUDE_IFACES = ['lo']
+    iface = filter(lambda i: i not in EXCLUDE_IFACES, netifaces.interfaces())[0]
+
+    return netifaces.ifaddresses(iface)[netifaces.AF_INET][0]['addr']
 
 
 class MyListener(object):
@@ -34,7 +45,7 @@ id = uuid.uuid1()
 zeroconf = Zeroconf()
 desc = {}
 name = "huayra-compartir-web-2__" + str(id) + "__._http._tcp.local."
-info = ServiceInfo("_http._tcp.local.", name, socket.inet_aton("127.0.0.1"), API_PORT, 0, 0, desc)
+info = ServiceInfo("_http._tcp.local.", name, socket.inet_aton(get_ip_addr()), API_PORT, 0, 0, desc)
 
 print("Anunciando servicio")
 zeroconf.register_service(info)
