@@ -14,11 +14,7 @@ import uuid
 import netifaces
 
 def get_ip_addr():
-    """
-    Por defecto vamos a tomar a la primer interface de las disponibles.
-    Es decir, al tener `enp0s23`, `wlan6`, y `enp0s23:1`, `enp0s23` sera la elegida.
-    """
-    EXCLUDE_IFACES = ['lo']
+    EXCLUDE_IFACES = ['lo','lo0']
     ip_addr = "127.0.0.1"
     ifaces = filter(lambda i: i not in EXCLUDE_IFACES, netifaces.interfaces())
 
