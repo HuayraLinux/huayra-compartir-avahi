@@ -16,9 +16,17 @@ class MyListener(object):
         print("- Service %s removed" % (name,))
 
     def add_service(self, zeroconf, type, name):
-        #info = zeroconf.get_service_info(type, name)
-        print("+ Service %s created" %(name,))
-        #print name, info.get_name(), info.server,
+        info = zeroconf.get_service_info(type, name)
+        #print "1"
+        #print("+ Service %s created" %(name,))
+        #print "2"
+        #print name
+        #print "44"
+        #print info.get_name()
+        #print "66"
+        ip = '.'.join(str(ord(i)) for i in info.address)
+        print(ip + " como " + name)
+        #print "3"
         #print name, info
 
 # TODO: Obtener este numero desde machine-id
