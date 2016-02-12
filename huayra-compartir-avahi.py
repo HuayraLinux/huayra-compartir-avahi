@@ -13,16 +13,18 @@ import requests
 import uuid
 import netifaces
 
-def get_ip_addr():
+def get_ip_n_macaddr():
     EXCLUDE_IFACES = ['lo','lo0']
     ip_addr = "127.0.0.1"
+    mac_addr = "ff:ff:ff:ff:ff:ff"
     ifaces = filter(lambda i: i not in EXCLUDE_IFACES, netifaces.interfaces())
 
     for iface in ifaces:
         if netifaces.AF_INET in netifaces.ifaddresses(iface):
             ip_addr = netifaces.ifaddresses(iface)[netifaces.AF_INET][0]['addr']
+            mac_addr = netifaces.ifaddresses(iface)[netifaces.AF_PACKET][0]['addr']
 
-    return ip_addr
+    return (ip_addr, mac_addr)
 
 
 class MyListener(object):
@@ -48,13 +50,11 @@ class MyListener(object):
                 requests.post(API_URL_PREFIX + "/equipos", data)
 
 
-# TODO: Obtener este numero desde machine-id
-id = uuid.uuid1()
-
+ip, mac = get_ip_n_macaddr()
 zeroconf = Zeroconf()
 desc = {}
-name = "huayra-compartir-web-2__" + str(id) + "__._http._tcp.local."
-info = ServiceInfo("_http._tcp.local.", name, socket.inet_aton(get_ip_addr()), API_PORT, 0, 0, desc)
+name = "huayra-compartir-web-2__" + str(mac) + "__._http._tcp.local."
+info = ServiceInfo("_http._tcp.local.", name, socket.inet_aton(ip), API_PORT, 0, 0, desc)
 
 print("Anunciando servicio como: " + name)
 zeroconf.register_service(info)
