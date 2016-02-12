@@ -6,15 +6,12 @@ API_PORT = 9919
 USE_API = True
 API_URL_PREFIX = "http://localhost:9919"
 
-import logging
 import socket
-import sys
-import requests
 import uuid
 import netifaces
 
 def get_ip_n_macaddr():
-    EXCLUDE_IFACES = ['lo','lo0']
+    EXCLUDE_IFACES = ['lo', 'lo0']
     ip_addr = "127.0.0.1"
     mac_addr = "ff:ff:ff:ff:ff:ff"
     ifaces = filter(lambda i: i not in EXCLUDE_IFACES, netifaces.interfaces())
@@ -30,7 +27,7 @@ def get_ip_n_macaddr():
 class MyListener(object):
 
     def remove_service(self, zeroconf, type, name):
-        info = zeroconf.get_service_info(type, name)
+        #info = zeroconf.get_service_info(type, name)
         if 'huayra-compartir-web-2' in name:
             machine_id = name.split("__")[1]
             print("- baja de servicio ", machine_id)
