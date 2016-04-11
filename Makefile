@@ -26,11 +26,11 @@ subir_version:
 	@git push --tags
 
 version_patch:
-	@bumpversion patch --current-version ${VERSION} Makefile pilasengine/src/version.ts ember-cordova/cordova/config.xml   --list
+	@bumpversion patch --current-version ${VERSION} Makefile --list
 	@make _help_version
 
 version_minor:
-	@bumpversion minor --current-version ${VERSION} Makefile pilasengine/src/version.ts ember-cordova/cordova/config.xml   --list
+	@bumpversion minor --current-version ${VERSION} Makefile --list
 	@make _help_version
 
 _help_version:
